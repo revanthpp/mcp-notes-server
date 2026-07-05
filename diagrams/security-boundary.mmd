@@ -1,0 +1,15 @@
+flowchart TB
+    I["Untrusted tool input<br/>filename, title, content"] --> R{"Filename policy"}
+    R -->|"absolute, .., hidden,<br/>or non-Markdown"| D["Reject"]
+    R -->|"allowed relative .md"| C["Canonical path resolution"]
+    C --> B{"Resolved path is<br/>under workspace root?"}
+    B -->|"no"| D
+    B -->|"yes"| A["Permit scoped operation"]
+
+    subgraph TrustedBoundary["Configured notes workspace boundary"]
+        A --> N[("Markdown notes")]
+    end
+
+    E[("Outside files, .env,<br/>system data")]:::blocked
+    D -. "protects" .-> E
+    classDef blocked fill:#fee,stroke:#b33,color:#711

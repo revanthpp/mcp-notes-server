@@ -1,0 +1,25 @@
+sequenceDiagram
+    actor User
+    participant Host as MCP host
+    participant Client as MCP client
+    participant Server as Notes server
+    participant Store as NoteStore
+    participant Disk as Notes workspace
+
+    User->>Host: Ask about a note
+    Host->>Client: Select read_note
+    Client->>Server: Invoke with filename
+    Server->>Store: read_note(filename)
+    Store->>Store: Validate and resolve path
+    alt Safe path
+        Store->>Disk: Read Markdown
+        Disk-->>Store: UTF-8 content
+        Store-->>Server: NoteContent
+        Server-->>Client: Structured tool result
+        Client-->>Host: Add result to context
+        Host-->>User: Answer
+    else Unsafe path
+        Store-->>Server: UnsafePathError
+        Server-->>Client: Tool error
+        Client-->>Host: Surface failure
+    end

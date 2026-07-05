@@ -1,0 +1,8 @@
+flowchart LR
+    U["User"] --> H["MCP Host<br/>AI application"]
+    H --> C["MCP Client"]
+    C <-->|"MCP over stdio"| S["MCP Notes Server"]
+    S --> T["Tool and resource handlers"]
+    T --> V["Path validation<br/>and containment"]
+    V --> W[("Configured notes workspace<br/>Markdown files")]
+    V -. "reject" .-> O["Outside files<br/>and hidden files"]
